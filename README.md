@@ -1,5 +1,7 @@
 # BIPDecoder
 **Image decoder for PS2 BIP format**  
+## Announcement
+当前此脚本落后于修改进度，不推荐使用此脚本，请先尝试使用[GARbro-Mod-1.0.1.2E20](https://github.com/Manicsteiner/GARbro/releases/tag/GARbro-Mod-1.0.1.2E20)。  
 ## Usage
 首先获取PS2游戏的ISO镜像，从中提取出BG.AFS和EV.AFS。用GARBro打开AFS文件，提取出其中的BIP文件。将BIP文件的内容作为LZSS Stream解压（可以修改后缀名为spc，用GARbro打开），得到解压缩后的文件。  
 将该文件拖放至BIPDecoder.py上。  

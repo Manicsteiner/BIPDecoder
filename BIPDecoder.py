@@ -10,29 +10,45 @@ def getFileNameWithoutExtension(path):
 
 def bip2png(file, saveDir='.'):
     fl = open(file, 'rb')
+    file_size = os.path.getsize(file)
     filename = getFileNameWithoutExtension(file)
+
+    fl.seek(0x88)
+    width, = struct.unpack('<H', fl.read(2))
+    height, = struct.unpack('<H', fl.read(2))
+    oversize = width * height * 4.0 / file_size
+
     fl.seek(0x14)
-    sign, = struct.unpack('>I', fl.read(4))
+    fakesign, sign, = struct.unpack('<2H', fl.read(4))
     dx = 0
     dy = 0
     sliced = True
-    if (sign == 0x00011700):
-        dx = 512
-        dy = 16
-    elif (sign == 0x00011600):
-        dx = 1024
-        dy = 32
-    elif (sign == 0x00011300):
+    # if (sign == 0x00011700):
+    #     dx = 512
+    #     dy = 16
+    # elif (sign == 0x00011600):
+    #     dx = 1024
+    #     dy = 32
+    # elif (sign == 0x00011300):
+    #     sliced = False
+    #     # print("480direct")
+    #     dx = 512
+    #     dy = 16
+    # else:
+    #     print("Unknown format")
+    #     return
+    if (oversize > 0.87):
         sliced = False
         # print("480direct")
         dx = 512
         dy = 16
+    elif (sign % 2 == 0 & sign <= 0x2A):
+        dx = 1024
+        dy = 32
     else:
-        print("Unknown format")
-        return
-    fl.seek(0x88)
-    width, = struct.unpack('<H', fl.read(2))
-    height, = struct.unpack('<H', fl.read(2))
+        dx = 512
+        dy = 16
+
     finalimg = Image.new('RGBA', (width, height))
     fl.seek(0x100)
 
